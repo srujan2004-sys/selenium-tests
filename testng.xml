@@ -1,0 +1,8 @@
+
+<suite name="CookiesSuite" verbose="1" parallel="false">
+  <test name="CookiesTests">
+    <classes>
+      <class name="demo.CookiesDemoTest"/>
+    </classes>
+  </test>
+</suite>

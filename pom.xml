@@ -1,0 +1,101 @@
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mphasis.com</groupId>
+  <artifactId>cookies-demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+ <properties> 
+
+    <maven.compiler.source>17</maven.compiler.source> 
+
+    <maven.compiler.target>17</maven.compiler.target> 
+
+ 
+
+    <!-- Selenium + matching DevTools for Chrome 144 --> 
+
+    <selenium.version>4.40.0</selenium.version> 
+
+    <testng.version>7.11.0</testng.version> 
+
+  </properties> 
+
+ 
+
+  <dependencies> 
+
+    <!-- Selenium WebDriver --> 
+
+    <dependency> 
+
+      <groupId>org.seleniumhq.selenium</groupId> 
+
+      <artifactId>selenium-java</artifactId> 
+
+      <version>${selenium.version}</version> 
+
+    </dependency> 
+
+ 
+
+    <!-- DevTools binding matching Chrome major version (144) --> 
+
+    <dependency> 
+
+      <groupId>org.seleniumhq.selenium</groupId> 
+
+      <artifactId>selenium-devtools-v144</artifactId> 
+
+      <version>${selenium.version}</version> 
+
+    </dependency> 
+
+ 
+
+    <!-- TestNG --> 
+
+    <dependency> 
+
+      <groupId>org.testng</groupId> 
+
+      <artifactId>testng</artifactId> 
+
+      <version>${testng.version}</version> 
+
+      <scope>test</scope> 
+
+    </dependency> 
+
+  </dependencies> 
+
+ 
+
+  <build> 
+
+    <plugins> 
+
+      <plugin> 
+
+        <groupId>org.apache.maven.plugins</groupId> 
+
+        <artifactId>maven-surefire-plugin</artifactId> 
+
+        <version>3.2.5</version> 
+
+        <configuration> 
+
+          <suiteXmlFiles> 
+
+            <suiteXmlFile>testng.xml</suiteXmlFile> 
+
+          </suiteXmlFiles> 
+
+        </configuration> 
+
+      </plugin> 
+
+    </plugins> 
+
+  </build>
+
+</project>
