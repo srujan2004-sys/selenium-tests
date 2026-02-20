@@ -1,0 +1,79 @@
+name: Maven TestNG (Chrome only) + HTML report
+ 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+ 
+jobs:
+  test-chrome:
+    runs-on: ubuntu-latest
+ 
+    # Start only Chrome as a service; this makes http://localhost:4444 available.
+    services:
+      selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+        options: >-
+          --shm-size=2g
+ 
+    env:
+      CI: "true"  # use this if you conditionally enable headless in code
+ 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+ 
+      - name: Cache Maven repo
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+ 
+      - name: Wait for Selenium to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:4444/status | grep -q '"ready":true'; then
+              echo "Selenium is ready"; break
+            fi
+            echo "Waiting for Selenium... ($i)"
+            sleep 2
+          done
+ 
+      - name: Run tests (Chrome only)
+        run: |
+          mvn -B -e \
+            -Dbrowser=chrome \
+            -DgridUrl=http://localhost:4444/wd/hub \
+            test
+ 
+      # Generate HTML report with the Surefire Report plugin
+      - name: Generate Surefire HTML report
+        # produces target/site/surefire-report.html
+        run: mvn -B surefire-report:report
+ 
+      # Upload the HTML report
+      - name: Upload surefire HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-html
+          path: target/site/surefire-report.html
+ 
+      # Also upload raw test outputs for debugging
+      - name: Upload raw surefire reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-raw
+          path: target/surefire-reports/**
